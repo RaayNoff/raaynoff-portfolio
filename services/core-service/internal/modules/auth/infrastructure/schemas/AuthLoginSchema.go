@@ -1,4 +1,4 @@
-package dtos
+package authSchemas
 
 type AuthLoginSchema struct {
 }

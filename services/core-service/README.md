@@ -1,24 +1,43 @@
 # Примерная структура сервиса
 
 ```
-/your-project
-├── cmd/
-│   └── main.go              # Точка входа
-├── config/
-│   └── config.go            # Загрузка и парсинг конфигурации
-├── internal/
-│   ├── app/                 # Инициализация приложения (Fiber, middlewares)
-│   ├── logger/              # Логгер (zap/slog/logrus)
-│   ├── database/            # Подключение к PostgreSQL
-│   ├── models/              # Структуры моделей
-│   ├── repositories/        # Доступ к данным (ORM/sqlx/gorm/pgx)
-│   ├── services/            # Бизнес-логика
-│   ├── handlers/            # HTTP-хендлеры
-│   └── routes/              # Роутинг
-├── migrations/              # SQL-миграции
-├── .env                     # Конфигурация
-├── go.mod
-└── go.sum
+|   .env
+|   .env.example
+|   go.mod
+|   go.sum
+|   README.md|       
++---cmd
+|       main.go
+|       
++---config
+|       config.go
+|       swagger.go
+|       
++---docs
+|       docs.go
+|       swagger.json
+|       swagger.yaml
+|       
++---internal
+|   +---app
+|   +---middleware
+|   +---modules
+|   |   +---auth
+|   |   |   |   Module.go
+|   |   |   +---domain
+|   |   |   |   +---dtos
+|   |   |   |   \---services
+|   |   |   |
+|   |   |   \---infrastructure
+|   |   |       \---handlers
+|   |   |       \---schemas
+|   |   |       \---repositories
+|   \---routes
+|           routes.go
+|
+\---pkg
+    \---database
+            postgres.go
 
 ```
 

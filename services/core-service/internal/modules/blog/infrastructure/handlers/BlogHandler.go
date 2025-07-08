@@ -1,17 +1,17 @@
-package handlers
+package blogHandlers
 
 import (
-	dtos "core-service/internal/dtos/blog"
-	"core-service/internal/services"
+	blogDtos "core-service/internal/modules/blog/domain/dtos"
+	blogServices "core-service/internal/modules/blog/domain/services"
 	"github.com/gofiber/fiber/v2"
 )
 
 type BlogHandler struct {
-	service services.BlogService
+	service *blogServices.BlogService
 }
 
-func NewBlogHandler(service services.BlogService) *BlogHandler {
-	return &BlogHandler{service}
+func NewBlogHandler(svc *blogServices.BlogService) *BlogHandler {
+	return &BlogHandler{service: svc}
 }
 
 // GetAll godoc
@@ -20,7 +20,7 @@ func NewBlogHandler(service services.BlogService) *BlogHandler {
 // @Tags blog
 // @Accept  json
 // @Produce  json
-// @Success 200 {array} models.Blog
+// @Success 200 {array} blogModels.Blog
 // @Router /blog [get]
 func (h *BlogHandler) GetAll(c *fiber.Ctx) error {
 	posts, err := h.service.GetAll()
@@ -37,11 +37,11 @@ func (h *BlogHandler) GetAll(c *fiber.Ctx) error {
 // @Tags blog
 // @Accept  json
 // @Produce  json
-// @Param blog body dtos.CreateBlogDto true "Blog post data"
-// @Success 201 {object} models.Blog
+// @Param blog body blogDtos.BlogSaveDto true "Blog post data"
+// @Success 201 {object} blogModels.Blog
 // @Router /blog [post]
 func (h *BlogHandler) Add(c *fiber.Ctx) error {
-	var input dtos.CreateBlogDto
+	var input blogDtos.BlogSaveDto
 
 	if err := c.BodyParser(&input); err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": err.Error()})

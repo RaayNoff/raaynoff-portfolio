@@ -1,17 +1,17 @@
-package handlers
+package authHandlers
 
 import (
-	dtos "core-service/internal/dtos/auth"
-	"core-service/internal/services"
+	authDtos "core-service/internal/modules/auth/domain/dtos"
+	authServices "core-service/internal/modules/auth/domain/services"
 	"github.com/gofiber/fiber/v2"
 )
 
 type AuthHandler struct {
-	service services.AuthService
+	service *authServices.AuthService
 }
 
-func NewAuthHandler(service services.AuthService) *AuthHandler {
-	return &AuthHandler{service: service}
+func NewAuthHandler(svc *authServices.AuthService) *AuthHandler {
+	return &AuthHandler{service: svc}
 }
 
 // Login godoc
@@ -20,11 +20,11 @@ func NewAuthHandler(service services.AuthService) *AuthHandler {
 // @Tags auth
 // @Accept  json
 // @Produce  json
-// @Param AuthLogin body dtos.AuthLoginDto true "User data"
-// @Success 201 {object} dtos.AuthLoginSchema
+// @Param AuthLogin body authDtos.AuthLoginDto true "User data"
+// @Success 201 {object} authSchemas.AuthLoginSchema
 // @Router /auth/login [post]
 func (a *AuthHandler) Login(c *fiber.Ctx) error {
-	var authLoginDto dtos.AuthLoginDto
+	var authLoginDto authDtos.AuthLoginDto
 
 	if err := c.BodyParser(&authLoginDto); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -33,4 +33,6 @@ func (a *AuthHandler) Login(c *fiber.Ctx) error {
 	}
 
 	a.service.Login(&authLoginDto)
+
+	return nil
 }

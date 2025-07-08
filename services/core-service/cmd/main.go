@@ -2,18 +2,17 @@ package main
 
 import (
 	"core-service/config"
-	_ "core-service/docs"
-	"core-service/internal/containers"
-	"core-service/internal/handlers"
-	"core-service/internal/models"
-	"core-service/internal/repositories"
+	"core-service/internal/app"
+	authModule "core-service/internal/modules/auth"
+	blogModule "core-service/internal/modules/blog"
+	blogModels "core-service/internal/modules/blog/domain/models"
+	userModels "core-service/internal/modules/user/domain/models"
 	"core-service/internal/routes"
-	"core-service/internal/services"
 	"core-service/pkg/database"
+	"fmt"
 	"github.com/gofiber/contrib/swagger"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"go.uber.org/dig"
 	"gorm.io/gorm"
 )
 
@@ -26,54 +25,35 @@ func main() {
 	cfg := config.Load()
 	db := database.Connect(cfg.PostgresDSN)
 
-	app := fiber.New(fiber.Config{
+	appInstance := fiber.New(fiber.Config{
 		AppName: "http://localhost:3000/api/docs",
 	})
 
-	configureCors(app)
-	initSwagger(app)
-	api := setGlobalPrefix(app)
+	configureCors(appInstance)
+	initSwagger(appInstance)
 	migrateDatabase(db)
 
-	blogContainer := containers.NewBlogContainer(db)
-	authContainer := containers.NewAuthContainer(cfg)
-	containers.NewUserContainer(db)
+	// 1. Инициализируем DI-контейнер
+	appModule := app.NewAppModule(db, cfg)
 
-	routes.SetupBlogRoutes(api, blogContainer.BlogHandler)
-	routes.SetupAuthRoutes(api, authContainer.AuthHandler)
-	startServer(app, cfg)
-}
-
-func buildContainer(cfg *config.Config) *dig.Container {
-	container := dig.New()
-
-	// Provide конфиг и базу
-	container.Provide(func() *config.Config {
-		return cfg
-	})
-	container.Provide(func(cfg *config.Config) *gorm.DB {
-		return database.Connect(cfg.PostgresDSN)
+	// 3. Настраиваем маршруты через DI
+	err := appModule.Container.Invoke(func(
+		blogModule *blogModule.BlogModule,
+		authModule *authModule.AuthModule,
+	) {
+		routes.SetupRoutes(appInstance, blogModule.Handler, authModule.Handler)
 	})
 
-	// Provide репозитории
-	container.Provide(repositories.NewUserRepository)
-	container.Provide(repositories.NewBlogRepository)
+	if err != nil {
+		fmt.Printf("DI error: %v", err)
+	}
 
-	// Provide сервисы
-	container.Provide(services.NewUserService)
-	container.Provide(services.NewBlogService)
-	container.Provide(services.NewAuthService)
-
-	// Provide хендлеры
-	container.Provide(handlers.NewAuthHandler)
-	container.Provide(handlers.NewBlogHandler)
-
-	return container
+	startServer(appInstance, cfg)
 }
 
 func migrateDatabase(db *gorm.DB) {
-	blogMigrate := db.AutoMigrate(&models.Blog{})
-	userMigrate := db.AutoMigrate(&models.User{})
+	blogMigrate := db.AutoMigrate(&blogModels.Blog{})
+	userMigrate := db.AutoMigrate(&userModels.User{})
 
 	if blogMigrate != nil {
 		return
@@ -102,8 +82,4 @@ func configureCors(app *fiber.App) {
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
 	}))
-}
-
-func setGlobalPrefix(app *fiber.App) fiber.Router {
-	return app.Group("/api/v1")
 }

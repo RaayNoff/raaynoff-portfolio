@@ -1,15 +1,15 @@
 basePath: /api/v1
 definitions:
-  dtos.AuthLoginDto:
+  authDtos.AuthLoginDto:
     properties:
       login:
         type: string
       password:
         type: string
     type: object
-  dtos.AuthLoginSchema:
+  authSchemas.AuthLoginSchema:
     type: object
-  dtos.CreateBlogDto:
+  blogDtos.BlogSaveDto:
     properties:
       content:
         type: string
@@ -18,7 +18,7 @@ definitions:
       shortDescription:
         type: string
     type: object
-  models.Blog:
+  blogModels.Blog:
     properties:
       content:
         type: string
@@ -51,14 +51,14 @@ paths:
         name: AuthLogin
         required: true
         schema:
-          $ref: '#/definitions/dtos.AuthLoginDto'
+          $ref: '#/definitions/authDtos.AuthLoginDto'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/dtos.AuthLoginSchema'
+            $ref: '#/definitions/authSchemas.AuthLoginSchema'
       summary: Login
       tags:
       - auth
@@ -74,7 +74,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.Blog'
+              $ref: '#/definitions/blogModels.Blog'
             type: array
       summary: Get all blog posts
       tags:
@@ -89,14 +89,14 @@ paths:
         name: blog
         required: true
         schema:
-          $ref: '#/definitions/dtos.CreateBlogDto'
+          $ref: '#/definitions/blogDtos.BlogSaveDto'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.Blog'
+            $ref: '#/definitions/blogModels.Blog'
       summary: Create blog post
       tags:
       - blog

@@ -1,4 +1,4 @@
-package dtos
+package authDtos
 
 type AuthLoginDto struct {
 	Login    string `json:"login"`

@@ -1,6 +1,6 @@
-package dtos
+package blogDtos
 
-type CreateBlogDto struct {
+type BlogSaveDto struct {
 	Name             string `json:"name"`
 	ShortDescription string `json:"shortDescription"`
 	Content          string `json:"content"`

@@ -1,7 +1,8 @@
-package services
+package authServices
 
 import (
-	dtos "core-service/internal/dtos/auth"
+	authDtos "core-service/internal/modules/auth/domain/dtos"
+	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"time"
 )
@@ -10,9 +11,10 @@ type AuthService struct {
 	secret []byte
 }
 
-func NewAuthService(secret string) *AuthService {
+// TODO CFG INIT
+func NewAuthService() *AuthService {
 	return &AuthService{
-		secret: []byte(secret),
+		//secret:
 	}
 }
 
@@ -27,6 +29,6 @@ func (s *AuthService) GenerateToken(userId uint) (string, error) {
 	return token.SignedString(s.secret)
 }
 
-func (s *AuthService) Login(dto *dtos.AuthLoginDto) {
-
+func (s *AuthService) Login(dto *authDtos.AuthLoginDto) {
+	fmt.Println(dto)
 }

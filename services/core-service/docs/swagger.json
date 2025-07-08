@@ -29,7 +29,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dtos.AuthLoginDto"
+                            "$ref": "#/definitions/authDtos.AuthLoginDto"
                         }
                     }
                 ],
@@ -37,7 +37,7 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/dtos.AuthLoginSchema"
+                            "$ref": "#/definitions/authSchemas.AuthLoginSchema"
                         }
                     }
                 }
@@ -62,7 +62,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.Blog"
+                                "$ref": "#/definitions/blogModels.Blog"
                             }
                         }
                     }
@@ -87,7 +87,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dtos.CreateBlogDto"
+                            "$ref": "#/definitions/blogDtos.BlogSaveDto"
                         }
                     }
                 ],
@@ -95,7 +95,7 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.Blog"
+                            "$ref": "#/definitions/blogModels.Blog"
                         }
                     }
                 }
@@ -103,7 +103,7 @@
         }
     },
     "definitions": {
-        "dtos.AuthLoginDto": {
+        "authDtos.AuthLoginDto": {
             "type": "object",
             "properties": {
                 "login": {
@@ -114,10 +114,10 @@
                 }
             }
         },
-        "dtos.AuthLoginSchema": {
+        "authSchemas.AuthLoginSchema": {
             "type": "object"
         },
-        "dtos.CreateBlogDto": {
+        "blogDtos.BlogSaveDto": {
             "type": "object",
             "properties": {
                 "content": {
@@ -131,7 +131,7 @@
                 }
             }
         },
-        "models.Blog": {
+        "blogModels.Blog": {
             "type": "object",
             "properties": {
                 "content": {

@@ -20,7 +20,7 @@ func SetupRoutes(
 
 	// Блог
 	blogGroup := api.Group("/blog")
-	app.Get("/test", blogHandler.GetAll)
+	app.Get("/", blogHandler.GetAll)
 	blogGroup.Post("/", blogHandler.Add)
 
 	// Аутентификация
